@@ -31,6 +31,7 @@ const config = require('yargs')
     .argv;
 const MqttSmarthome = require('mqtt-smarthome-connect');
 const xmlrpc = require('xmlrpc');
+const shortid = require('shortid');
 
 log.setLevel(config.verbosity);
 log.info(pkg.name + ' ' + pkg.version + ' starting');
@@ -52,6 +53,7 @@ const client = xmlrpc.createClient({
     port: 2001,
     path: '/'
 });
+const ownid = shortid.generate();
 
 function methodCall(method, parameters) {
     return new Promise((resolve, reject) => {
@@ -146,7 +148,7 @@ mqtt.subscribe(config.name + "/set/+/+/+", (topic, message, wildcard) => {
 });
 
 log.info('rpc', '> init');
-methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, 'hm2mqtt_rfd']).catch(err => {
+methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, ownid]).catch(err => {
     log.error(err);
 });
 
