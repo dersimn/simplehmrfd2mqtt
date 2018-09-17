@@ -43,11 +43,11 @@ const mqtt = new MqttSmarthome(config.mqttUrl, {
 });
 mqtt.connect();
 
-var server = xmlrpc.createServer({
+const server = xmlrpc.createServer({
     host: '0.0.0.0',
     port: config.listenPort
 });
-var client = xmlrpc.createClient({
+const client = xmlrpc.createClient({
     host: config.ccuAddress,
     port: 2001,
     path: '/'
