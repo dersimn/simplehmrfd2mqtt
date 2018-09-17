@@ -106,11 +106,13 @@ const rpcMethods = {
         log.debug('rpc < event', JSON.stringify(params));
 
         const address = params[1];
+        const serial = address.substr(0, address.indexOf(':'));
+        const channel = address.substr(address.indexOf(':')+1);
         const datapoint = params[2];
         const value = params[3];
 
         if (!datapoint.startsWith('PARTY_')) {
-            mqtt.publish(config.name+'/status/'+address+'/'+datapoint, {'val': value});
+            mqtt.publish(config.name+'/status/'+serial+'/'+channel+'/'+datapoint, {'val': value});
         }
 
         if (typeof callback === 'function') {
@@ -120,6 +122,20 @@ const rpcMethods = {
 };
 Object.keys(rpcMethods).forEach(method => {
     server.on(method, rpcMethods[method]);
+});
+
+mqtt.subscribe(config.name + "/set/+/+/+", (topic, message, wildcard) => {
+    const serial = wildcard[0];
+    const channel = wildcard[1];
+    const datapoint = wildcard[2];
+
+    log.debug('rpc > setValue', serial, channel, datapoint, message);
+
+    methodCall('setValue', [serial+':'+channel, datapoint, String(message)]).then(err => {
+        if (err) {
+            log.error(err);
+        }
+    });
 });
 
 log.info('rpc', '> init');
