@@ -32,6 +32,7 @@ const config = require('yargs')
 const MqttSmarthome = require('mqtt-smarthome-connect');
 const xmlrpc = require('xmlrpc');
 const shortid = require('shortid');
+const Timer = require('yetanothertimerlibrary');
 
 log.setLevel(config.verbosity);
 log.info(pkg.name + ' ' + pkg.version + ' starting');
@@ -140,10 +141,8 @@ mqtt.subscribe(config.name + "/set/+/+/+", (topic, message, wildcard) => {
 
     log.debug('rpc > setValue', serial, channel, datapoint, message);
 
-    methodCall('setValue', [serial+':'+channel, datapoint, String(message)]).then(err => {
-        if (err) {
-            log.error(err);
-        }
+    methodCall('setValue', [serial+':'+channel, datapoint, String(message)]).catch(err => {
+        log.error(err);
     });
 });
 
@@ -151,6 +150,14 @@ log.info('rpc', '> init');
 methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, ownid]).catch(err => {
     log.error(err);
 });
+var pingpong = new Timer(() => {
+    let id = shortid.generate();
+
+    log.debug('rpc > ping', id);
+    methodCall('ping', [id]).catch(err => {
+        log.error(err);
+    });
+}).start(30*1000);
 
 function stop() {
     log.info('rpc', '> stop');
