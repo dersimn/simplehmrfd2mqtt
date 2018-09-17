@@ -105,6 +105,13 @@ const rpcMethods = {
         }
         log.debug('rpc < event', JSON.stringify(params));
 
+        if (params[1] === 'CENTRAL' && params[2] === 'PONG') {
+            if (typeof callback === 'function') {
+                callback(null, '');
+            }
+            return;
+        }
+
         const address = params[1];
         const serial = address.substr(0, address.indexOf(':'));
         const channel = address.substr(address.indexOf(':')+1);
