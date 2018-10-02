@@ -15,8 +15,8 @@ const config = require('yargs')
     .alias({
         h: 'help',
         m: 'mqtt-url',
-        b: 'ccu-address',
-        l: 'init-address',
+        c: 'ccu-address',
+        i: 'init-address',
         p: 'listen-port',
         v: 'verbosity'
     })
