@@ -30,7 +30,7 @@ const config = require('yargs')
     .help('help')
     .argv;
 const MqttSmarthome = require('mqtt-smarthome-connect');
-const xmlrpc = require('xmlrpc');
+const xmlrpc = require('homematic-xmlrpc');
 const shortid = require('shortid');
 const Timer = require('yetanothertimerlibrary');
 
