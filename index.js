@@ -54,7 +54,7 @@ const client = xmlrpc.createClient({
     port: 2001,
     path: '/'
 });
-const ownid = shortid.generate();
+const ownid = pkg.name + '_' + shortid.generate();
 
 function methodCall(method, parameters) {
     return new Promise((resolve, reject) => {
