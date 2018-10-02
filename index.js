@@ -122,7 +122,7 @@ const rpcMethods = {
         const value = params[3];
 
         if (!datapoint.startsWith('PARTY_')) {
-            mqtt.publish(config.name+'/status/'+serial+'/'+channel+'/'+datapoint, {'val': value});
+            mqtt.publish(config.name+'/status/'+serial+'/'+channel+'/'+datapoint, value);
         }
 
         if (typeof callback === 'function') {
