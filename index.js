@@ -140,7 +140,7 @@ const rpcMethods = {
             !filter_blacklist.some(rx => rx.test(datapoint)) &&
             (filter_whitelist.some(rx => rx.test(datapoint)) || filter_whitelist.length == 0 )
         ) {
-            mqtt.publish(config.name+'/status/'+serial+'/'+channel+'/'+datapoint, value);
+            mqtt.publish(config.name+'/status/'+serial+'/'+channel+'/'+datapoint, value, {retain: true});
         }
 
         if (typeof callback === 'function') {
