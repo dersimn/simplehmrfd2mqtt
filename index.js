@@ -12,6 +12,8 @@ const config = require('yargs')
     .describe('ccu-address', 'CCU address')
     .describe('init-address', 'Own IP for callbacks')
     .describe('listen-port', 'Own Port for callbacks')
+    .describe('filter-whitelist', 'Publish only Homematic Datapoints that match any regular expression defined here. Specify multiple regex strings seperated by space, for e.g.: "^PRESS_ ^BRIGHTNESS$"')
+    .describe('filter-blacklist', 'Similar to --filter-whitelist. Homematic Datapoints that match any regular expression defined here, won\'t be published. Specify multiple regex strings seperated by space, for e.g.: "^PARTY_"')
     .alias({
         h: 'help',
         m: 'mqtt-url',
@@ -37,6 +39,19 @@ const Timer = require('yetanothertimerlibrary');
 log.setLevel(config.verbosity);
 log.info(pkg.name + ' ' + pkg.version + ' starting');
 log.debug("loaded config: ", config);
+
+var filter_whitelist = [];
+if (typeof config.filterWhitelist === 'string') {
+    config.filterWhitelist.split(' ').forEach(rx => {
+        filter_whitelist.push(new RegExp(rx));
+    });
+}
+var filter_blacklist = [];
+if (typeof config.filterBlacklist === 'string') {
+    config.filterBlacklist.split(' ').forEach(rx => {
+        filter_blacklist.push(new RegExp(rx));
+    });
+}
 
 log.info('mqtt trying to connect', config.mqttUrl);
 const mqtt = new MqttSmarthome(config.mqttUrl, {
@@ -121,7 +136,10 @@ const rpcMethods = {
         const datapoint = params[2];
         const value = params[3];
 
-        if (!datapoint.startsWith('PARTY_')) {
+        if ( 
+            !filter_blacklist.some(rx => rx.test(datapoint)) &&
+            (filter_whitelist.some(rx => rx.test(datapoint)) || filter_whitelist.length == 0 )
+        ) {
             mqtt.publish(config.name+'/status/'+serial+'/'+channel+'/'+datapoint, value);
         }
 
