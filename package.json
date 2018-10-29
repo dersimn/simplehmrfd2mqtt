@@ -1,5 +1,5 @@
 {
-  "name": "simplehomematicrfd2mqtt",
+  "name": "simplehmrfd2mqtt",
   "version": "0.0.1",
   "description": "Simple Homematic rfd bridge for mqtt-smarthome. Implementing only rfd, no hmip, no rega, no paramset database.",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dersimn/simplehomematicrfd2mqtt.git"
+    "url": "git+https://github.com/dersimn/simplehmrfd2mqtt.git"
   },
   "author": "Simon Christmann <simon@christmann.email>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dersimn/simplehomematicrfd2mqtt/issues"
+    "url": "https://github.com/dersimn/simplehmrfd2mqtt/issues"
   },
-  "homepage": "https://github.com/dersimn/simplehomematicrfd2mqtt#readme",
+  "homepage": "https://github.com/dersimn/simplehmrfd2mqtt#readme",
   "dependencies": {
     "homematic-xmlrpc": "^1.0.2",
     "mqtt-smarthome-connect": "0.0.6",
