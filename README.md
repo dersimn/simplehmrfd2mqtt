@@ -6,7 +6,7 @@ This way you will get the slimmest possible bridge, at the expense of a slightly
 
 	docker run -d --restart=always --name=hm \
 		-p 2126:2126 \
-		dersimn/simplehomematicrfd2mqtt \
+		dersimn/simplehmrfd2mqtt \
 		--ccu-address 10.1.1.112 \
 		--init-address 10.1.1.50 \
 		--mqtt-url mqtt://10.1.1.50 \
