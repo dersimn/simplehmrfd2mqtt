@@ -159,32 +159,37 @@ mqtt.subscribe(config.name + "/set/+/+/+", (topic, message, wildcard) => {
     const channel = wildcard[1];
     const datapoint = wildcard[2];
 
-    log.debug('rpc > setValue', serial, channel, datapoint, message);
-
-    methodCall('setValue', [serial+':'+channel, datapoint, String(message)]).catch(err => {
-        log.error(err);
+    methodCall('setValue', [serial+':'+channel, datapoint, String(message)]).then(() => {
+        log.debug('rpc > setValue', serial, channel, datapoint, String(message));
+    }).catch(err => {
+        log.error('rpc > setValue', serial, channel, datapoint, String(message), err.faultCode, err.faultString);
     });
 });
 
-log.info('rpc', '> init');
-methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, ownid]).catch(err => {
-    log.error(err);
+methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, ownid]).then(() => {
+    log.info('rpc > init', 'http://'+config.initAddress+':'+config.listenPort, ownid);
+}).catch(err => {
+    log.error('rpc > init', 'http://'+config.initAddress+':'+config.listenPort, ownid, err.faultCode, err.faultString);
 });
 var pingpong = new Timer(() => {
     let id = shortid.generate();
 
-    log.debug('rpc > ping', id);
-    methodCall('ping', [id]).catch(err => {
-        log.error(err);
+    methodCall('ping', [id]).then(() => {
+        log.debug('rpc > ping', id);
+    }).catch(err => {
+        log.error('rpc > ping', id, err);
     });
 }).start(30*1000);
 
 function stop() {
     log.info('rpc', '> stop');
-    methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, '']).catch(err => {
-        log.error(err);
+    methodCall('init', ['http://'+config.initAddress+':'+config.listenPort, '']).then(() => {
+        log.debug('rpc > init', 'http://'+config.initAddress+':'+config.listenPort);
+        process.exit(0);
+    }).catch(err => {
+        log.error('rpc > init', 'http://'+config.initAddress+':'+config.listenPort, err.faultCode, err.faultString);
+        process.exit(0);
     });
-    process.exit(0);
 }
 process.on('SIGINT', stop);
 process.on('SIGTERM', stop);
